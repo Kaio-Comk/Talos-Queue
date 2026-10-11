@@ -1,18 +1,18 @@
 <div align="center">
 
-# 🐘 pg-lease-queue
+# 🐘 Talos-Queue
 ### Durable, Distributed Job Queue for PostgreSQL & Supabase (Zero Redis, Zero Celery)
 
 [![PostgreSQL: 14+](https://img.shields.io/badge/PostgreSQL-14%2B%20%7C%20Supabase-336791.svg?logo=postgresql&logoColor=white)](https://postgresql.org)
-[![Concurrency: SKIP LOCKED](https://img.shields.io/badge/Concurrency-FOR%20UPDATE%20SKIP%20LOCKED-orange.svg)](https://github.com/Kaio-Comk/pg-lease-queue)
-[![Architecture: Zero Broker](https://img.shields.io/badge/Architecture-Zero%20Redis%20%7C%20Zero%20Celery-purple.svg)](https://github.com/Kaio-Comk/pg-lease-queue)
-[![Safety: ACID Leases](https://img.shields.io/badge/Safety-Heartbeats%20%26%20Crash%20Recovery-green.svg)](https://github.com/Kaio-Comk/pg-lease-queue)
+[![Concurrency: SKIP LOCKED](https://img.shields.io/badge/Concurrency-FOR%20UPDATE%20SKIP%20LOCKED-orange.svg)](https://github.com/Kaio-Comk/Talos-Queue)
+[![Architecture: Zero Broker](https://img.shields.io/badge/Architecture-Zero%20Redis%20%7C%20Zero%20Celery-purple.svg)](https://github.com/Kaio-Comk/Talos-Queue)
+[![Safety: ACID Leases](https://img.shields.io/badge/Safety-Heartbeats%20%26%20Crash%20Recovery-green.svg)](https://github.com/Kaio-Comk/Talos-Queue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Durable, concurrent background jobs directly in your existing PostgreSQL database.**  
 *Atomic row leases, lock-free parallel consumers, automatic crash recovery, idempotency deduplication, and exponential backoff.*
 
-[Why Not Redis?](#-why-pg-lease-queue) • [Lifecycle & State Machine](#-state-machine--guarantees) • [Installation](#-installation) • [Quickstart](#-quickstart) • [SQL Migration](#-sql-architecture)
+[Why Not Redis?](#-why-talos-queue) • [Lifecycle & State Machine](#-state-machine--guarantees) • [Installation](#-installation) • [Quickstart](#-quickstart) • [SQL Migration](#-sql-architecture)
 
 </div>
 
@@ -71,7 +71,7 @@ stateDiagram-v2
 psql -d mydb -f sql/001_job_queue.sql
 
 # 2. Install the client library
-pip install git+https://github.com/Kaio-Comk/pg-lease-queue.git
+pip install git+https://github.com/Kaio-Comk/Talos-Queue.git
 ```
 
 ---
@@ -134,5 +134,5 @@ pytest -v
 Distributed under the **MIT License**. See `LICENSE` for details.
 
 <div align="center">
-  <sub>Built with ❤️ by Kaio Lima. If pg-lease-queue simplified your background jobs, please star ⭐ the project!</sub>
+  <sub>Built with ❤️ by Kaio Lima. If Talos-Queue simplified your background jobs, please star ⭐ the project!</sub>
 </div>
