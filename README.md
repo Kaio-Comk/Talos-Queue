@@ -18,14 +18,14 @@
 
 ---
 
-## ⚡ Why pg-lease-queue? (Postgres as a Queue Done Right)
+## ⚡ Why Talos-Queue? (Postgres as a Queue Done Right)
 
 In modern architectures, adding Redis, RabbitMQ, or Celery introduces extra infrastructure, dual-write consistency issues, and operational headache.
 
 | Feature | Redis / BullMQ | Celery + RabbitMQ | `pg-lease-queue` |
 |---|:---:|:---:|:---:|
 | **Infrastructure Overhead** | ⚠️ Extra server/service | ❌ Two extra servers | ✅ **Zero (Uses your existing Postgres/Supabase)** |
-| **ACID Consistency** | ❌ Dual-write desync | ❌ Separate state | ✅ **100% Atomic with business transactions** |
+| **ACID Consistency** | ❌ Dual-write desync | ❌ Separate state | ✅ **Atomic within same Postgres transaction** |
 | **Worker Crash Recovery** | ⚠️ Needs ACK timeout | ⚠️ Complex visibility timeout | ✅ **Deterministic Leases & Heartbeats** |
 | **Duplicate Prevention** | Custom Lua scripts | Manual locking | ✅ **Partial Unique Index on `(kind, dedupe_key)`** |
 | **Row Level Security (RLS)**| ❌ None | ❌ None | ✅ **Fully locked to Service Role** |
@@ -56,11 +56,11 @@ stateDiagram-v2
     FAILED --> [*]
 ```
 
-### Core Guarantees
-1. **No Double Processing (`FOR UPDATE SKIP LOCKED`):** Multiple workers claim jobs in parallel without lock contention or deadlocks.
-2. **Deduplication:** Enqueueing the exact same task twice returns the existing active job instead of duplicating work.
-3. **Crash Recovery:** If a worker crashes, loses power, or runs out of memory, its job lease expires and is automatically recovered by another worker.
-4. **Heartbeat Protection:** Long-running tasks (transcoding, AI inference, scraping) renew their lease dynamically. If a worker loses its lease, its stale result is discarded safely.
+### 🛡️ Concurrency Model & Delivery Semantics
+1. **Row-Level Parallel Claims (FOR UPDATE SKIP LOCKED):** Multiple workers claim jobs concurrently using PostgreSQL row locks. By using SKIP LOCKED, workers bypass already locked rows immediately without blocking each other or deadlocking.
+2. **At-Least-Once Delivery & Crash Recovery:** Jobs are guaranteed at-least-once execution. If a worker process crashes, drops network connection, or runs out of memory, its lease expires and the job is automatically reclaimed.
+3. **Transactional Boundary (Zero Dual-Write):** Enqueueing can participate in the same PostgreSQL transaction as your business entities (BEGIN ... COMMIT). If the business write fails or rolls back, the job is never queued.
+4. **Deterministic Lease Renewal:** Long-running tasks (transcoding, scraping, AI) dynamically renew their lease via background heartbeats. If a worker fails to heartbeat before the lease window expires, its late output is discarded safely.
 
 ---
 
