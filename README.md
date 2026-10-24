@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Durable, concurrent background jobs directly in your existing PostgreSQL database.**  
-*Atomic row leases, lock-free parallel consumers, automatic crash recovery, idempotency deduplication, and exponential backoff.*
+*Atomic row leases, non-blocking parallel worker claims via SKIP LOCKED (zero lock contention), automatic crash recovery, idempotency deduplication, and exponential backoff.*
 
 [Why Not Redis?](#-why-talos-queue) • [Lifecycle & State Machine](#-state-machine--guarantees) • [Installation](#-installation) • [Quickstart](#-quickstart) • [SQL Migration](#-sql-architecture)
 
@@ -47,7 +47,7 @@ stateDiagram-v2
     }
     
     CLAIMED --> FINISHED: finish(result)
-    CLAIMED --> RETRYING: Temporary Exception (attempts < max_attempts)
+    CLAIMED --> RETRYING: Temporary Exception (attempts under max_attempts)
     RETRYING --> PENDING: Exponential backoff delay
     CLAIMED --> FAILED: PermanentError OR attempts >= max_attempts
     
